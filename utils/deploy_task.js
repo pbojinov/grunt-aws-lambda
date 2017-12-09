@@ -172,6 +172,7 @@ deployTask.getHandler = function (grunt) {
                         func_options.FunctionName = func_name;
                         lambda.updateFunctionConfiguration(func_options, function (err, data) {
                             if (err) {
+                                grunt.fail.warn(err);
                                 grunt.fail.warn('Could not update config, check that values and permissions are valid');
                                 deferred.reject();
                             } else {
@@ -191,6 +192,7 @@ deployTask.getHandler = function (grunt) {
                     if (options.enableVersioning) {
                         lambda.publishVersion({FunctionName: func_name, Description: getDeploymentDescription()}, function (err, data) {
                             if (err) {
+                                grunt.fail.warn(err);
                                 grunt.fail.warn('Publishing version for function ' + func_name + ' failed with message ' + err.message);
                                 deferred.reject();
                             } else {
@@ -220,6 +222,7 @@ deployTask.getHandler = function (grunt) {
                         params.Description = getDeploymentDescription();
                         var aliasFunction = 'updateAlias';
                         if (err) {
+                            grunt.fail.warn(err);
                             if (err.statusCode === 404) {
                                 aliasFunction = 'createAlias';
                             } else {
@@ -230,6 +233,7 @@ deployTask.getHandler = function (grunt) {
                         }
                         lambda[aliasFunction](params, function (err, data) {
                             if (err) {
+                                grunt.fail.warn(err);
                                 grunt.fail.warn(aliasFunction + ' for ' + func_name + ' failed with message ' + err.message);
                                 deferred.reject();
                             } else {
@@ -270,6 +274,7 @@ deployTask.getHandler = function (grunt) {
                     if (is_s3_upload) {
                         managed_upload.send(function (err) {
                             if (err) {
+                                grunt.fail.warn(err);
                                 grunt.fail.warn('S3 Upload failed: ' + err);
                                 deferred.reject();
                             }
@@ -288,6 +293,7 @@ deployTask.getHandler = function (grunt) {
                     var deferred = Q.defer();
                     lambda.updateFunctionCode(code_params, function (err, data) {
                         if (err) {
+                            grunt.fail.warn(err);
                             grunt.fail.warn('Package upload failed, check you have lambda:UpdateFunctionCode permissions and that your package is not too big to upload.');
                             deferred.reject();
                         }
